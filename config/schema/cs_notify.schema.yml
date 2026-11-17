@@ -2,9 +2,10 @@ cs_notify.settings:
   type: config_object
   label: 'CS Notify settings'
   mapping:
-    api_url:
+
+    environment:
       type: string
-      label: 'API URL'
+      label: 'Environment'
 
     api_key:
       type: string

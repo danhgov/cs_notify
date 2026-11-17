@@ -45,4 +45,14 @@ class NotificationClient implements NotificationClientInterface {
       throw new \Exception("Failed to queue up $the_thing.");
     }
   }
+
+  /**
+   * Get the Notify API URL based on the environment setting.
+   */
+  public function getApiUrl(string $environment): string {
+    return $environment === 'prod'
+      ? 'https://notify.digital.gov.bc.ca'
+      : 'https://test.notify.digital.gov.bc.ca';
+  }
+  
 }

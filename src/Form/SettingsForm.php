@@ -33,12 +33,17 @@ class SettingsForm extends ConfigFormBase {
 
     $config = $this->config('cs_notify.settings');
 
-    $form['api_url'] = [
-      '#type' => 'url',
-      '#title' => $this->t('API URL'),
-      '#description' => $this->t('Base URL for the CS Notify API.'),
-      '#default_value' => $config->get('api_url'),
-      '#required' => TRUE,
+    $form['environment'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Environment'),
+      '#default_value' => $config->get('environment') ?? 'test',
+      '#options' => [
+        'test' => $this->t('Test'),
+        'prod' => $this->t('Production'),
+      ],
+      '#description' => $this->t(
+        'Test: https://test.notify.digital.gov.bc.ca/<br>Production: https://notify.digital.gov.bc.ca/'
+      ),
     ];
 
     $form['api_key'] = [
@@ -80,7 +85,6 @@ class SettingsForm extends ConfigFormBase {
 
     $this->configFactory
       ->getEditable('cs_notify.settings')
-      ->set('api_url', $form_state->getValue('api_url'))
       ->set('api_key', $form_state->getValue('api_key'))
       ->set('timeout', (int) $form_state->getValue('timeout'))
       ->save();

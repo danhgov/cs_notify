@@ -4,6 +4,7 @@ namespace Drupal\cs_notify\Plugin\QueueWorker;
 
 use Drupal\cs_notify\Exception\NotifyAPIPermanentFailException;
 use Drupal\cs_notify\Exception\NotifyAPITemporaryFailException;
+use Drupal\cs_notify\Service\NotificationClient;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -43,6 +44,7 @@ class NotificationStatusCheckQueueWorker extends QueueWorkerBase implements Cont
     protected ClientInterface $httpClient,
     protected ConfigFactoryInterface $configFactory,
     protected QueueFactory $queueFactory,
+    protected NotificationClient $notificationClient,
     LoggerChannelFactoryInterface $loggerFactory,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -60,6 +62,7 @@ class NotificationStatusCheckQueueWorker extends QueueWorkerBase implements Cont
       $container->get('http_client'),
       $container->get('config.factory'),
       $container->get('queue'),
+      $container->get('cs_notify.client'),
       $container->get('logger.factory'),
     );
   }
@@ -86,7 +89,7 @@ class NotificationStatusCheckQueueWorker extends QueueWorkerBase implements Cont
     ];
 
     try {
-      $url = sprintf('%s/api/v1/notification_request/%s/request_details', $config->get('api_url'), $emailQueuedInNotifySystem['notify_id']);
+      $url = sprintf('%s/api/v1/notification_request/%s/request_details', $this->notificationClient->getApiUrl($config->get('environment')), $emailQueuedInNotifySystem['notify_id']);
       $response = $this->httpClient->request(
         'GET',
         $url,

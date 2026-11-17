@@ -1,4 +1,4 @@
-api_url: ''
+environment: test
 api_key: ''
 timeout: 30
 process_notify_queues_during_cron: true

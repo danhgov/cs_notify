@@ -4,6 +4,7 @@ namespace Drupal\cs_notify\Plugin\QueueWorker;
 
 use Drupal\cs_notify\Exception\NotifyAPIPermanentFailException;
 use Drupal\cs_notify\Exception\NotifyAPITemporaryFailException;
+use Drupal\cs_notify\Service\NotificationClient;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -43,6 +44,7 @@ class NotificationHandOffQueueWorker extends QueueWorkerBase implements Containe
     protected ClientInterface $httpClient,
     protected ConfigFactoryInterface $configFactory,
     protected QueueFactory $queueFactory,
+    protected NotificationClient $notificationClient,
     LoggerChannelFactoryInterface $loggerFactory,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -60,6 +62,7 @@ class NotificationHandOffQueueWorker extends QueueWorkerBase implements Containe
       $container->get('http_client'),
       $container->get('config.factory'),
       $container->get('queue'),
+      $container->get('cs_notify.client'),
       $container->get('logger.factory'),
     );
   }
@@ -101,7 +104,7 @@ class NotificationHandOffQueueWorker extends QueueWorkerBase implements Containe
 
       $response = $this->httpClient->request(
         'POST',
-        $config->get('api_url') . '/api/v1/notifysimple',
+        $this->notificationClient->getApiUrl($config->get('environment')) . '/api/v1/notifysimple',
         $request_payload + ['http_errors' => FALSE], // Affects how Guzzle handles 4xx and 5xx responses. We want to handle those ourselves.
       );
 
