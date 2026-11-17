@@ -38,18 +38,18 @@ class SettingsForm extends ConfigFormBase {
       '#title' => $this->t('Environment'),
       '#default_value' => $config->get('environment') ?? 'test',
       '#options' => [
-        'test' => $this->t('Test'),
-        'prod' => $this->t('Production'),
+        'test' => $this->t('Test  <br/><small>(uses https://test.notify.digital.gov.bc.ca/)</small>'),
+        'prod' => $this->t('Production <br/><small>(uses https://notify.digital.gov.bc.ca/)</small>'),
       ],
-      '#description' => $this->t(
-        'Test: https://test.notify.digital.gov.bc.ca/<br>Production: https://notify.digital.gov.bc.ca/'
-      ),
     ];
 
     $form['api_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API Key'),
-      '#description' => $this->t('For production environments, this should normally be overridden via settings.php.'),
+      '#description' => $this->t('You need a different key for test vs production environments. Get the appropriate one from:<ul> 
+          <li>https://test.notify.digital.gov.bc.ca/settings, or </li>
+          <li>https://notify.digital.gov.bc.ca/settings</li>
+          </ul>'),
       '#default_value' => $config->get('api_key'),
     ];
 
@@ -65,12 +65,12 @@ class SettingsForm extends ConfigFormBase {
     $form['process_notify_queues_during_cron'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Process Notify queues using Drupal cron'),
-      '#description' => $this->t("
-        Normally, you should leave this checked, 
-        so that Notify queues are processed by Drupal's cron.<br/>
+      '#description' => $this->t("<ul>
+        <li>Leave this enabled on a 'normal' Drupal site, to have Notify queues  processed by Drupal's <em>cron</em>. 
+        The more frequently cron runs, the more quickly queued emails will be sent.</li>
         
-        Uncheck it if the queues are processed by something else, such as a separate <code>drush queue:run</code> job 
-        (such as we do on Openshift in BC Gov's 'Basebuild').
+        <li>If you run '<code>drush queue:run</code>' in your own process (such as we do on Openshift in BC Gov's 'Basebuild'),
+        then disable this setting to avoid duplicate processing of the Notify queues.</li>
       "),
       '#default_value' => $config->get('process_notify_queues_during_cron') ?? TRUE,
     ];
