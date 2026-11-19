@@ -85,8 +85,11 @@ class SettingsForm extends ConfigFormBase {
 
     $this->configFactory
       ->getEditable('cs_notify.settings')
-      ->set('api_key', $form_state->getValue('api_key'))
+      ->set('environment',   $form_state->getValue('environment'))
+      ->set('api_key',       $form_state->getValue('api_key'))
       ->set('timeout', (int) $form_state->getValue('timeout'))
+      ->set('process_notify_queues_during_cron', 
+                      (bool) $form_state->getValue('process_notify_queues_during_cron'))
       ->save();
 
     parent::submitForm($form, $form_state);
