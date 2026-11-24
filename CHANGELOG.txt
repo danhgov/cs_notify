@@ -1,0 +1,20 @@
+# Changelog
+
+## [1.0.1] - 2026-11-19
+
+### Added
+- README
+
+### Fixed
+- Two items from the settings-form were not getting saved in config
+
+---------
+## [1.0.0] - 2026-11-17
+
+### Added
+- Basic module set up
+- Dual-queue operation 
+  - one for messages for Drupal to hand off
+  - one for messages to check up on.
+- Drupal configuration form.
+
